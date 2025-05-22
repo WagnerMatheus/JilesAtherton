@@ -28,7 +28,8 @@
 %
 %   OBS.: este script foi testado em Octave e pode necessitar pequenas
 % adaptações de sintaxe para rodar em MATLAB. Uma alternativa é utilizar o
-% `OctaveOnline`: https://octave-online.net/
+% `OctaveOnline`:
+% https://octave-online.net/workspace~afrqkndQgtEXNgCGTdPQCnxbcHehzbjhXwikwxfcRFZpyxVj
 %
 %   1. FORMULAÇÃO
 %
