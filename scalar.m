@@ -104,6 +104,21 @@
 %
 %     M = c M_an + (1-c) M_ir.
 %
+%   OBS.: os parâmetros do modelo de histerese utilizados para simulação neste
+% script provém de [2], tabela 6.1, coluna `Conhecido`. São eles:
+%
+%   +----------+-------------+
+%   | ms [A/m] | 1,47 x 10^6 |
+%   +----------+-------------+
+%   | k [A/m]  | 70,0        |
+%   +----------+-------------+
+%   | c        | 340 x 10^-3 |
+%   +----------+-------------+
+%   | a [A/m]  | 89,0        |
+%   +----------+-------------+
+%   | alpha    | 169 x 10^-6 |
+%   +----------+-------------+
+%
 %   2. INTEGRAÇÃO
 %
 %   A resolução numérica de EDOs no tempo (também chamadas de Problema de
@@ -187,6 +202,14 @@
 %  - Indução no tempo;
 %  - Componentes da magnetização no tempo.
 %
+%   Esses gráficos são gerados para os seguintes casos:
+%
+%  - Curva de magnetização inicial;
+%  - Aumento gradual da indução máxima alternada, formando laços de
+%    variadas amplitudes;
+%  - Indução com harmônicas de 3º e 5º grau, formando laços menores
+%    deslocados do 0,0;
+%
 %   5. REFERÊNCIAS
 %
 % [1]: Gyselinck, Johan & Dular, Patrick & Sadowski, Nelson & Leite, J.V.
@@ -196,6 +219,10 @@
 % Computation and Mathematics in Electrical and Electronic Engineering.
 % 23. 685-693. 10.1108/03321640410540601.
 %
+% [2]: Batistela, N. J. (2001). Caracterização e modelagem eletromagnética
+% de lâminas de aço silício. Tese (doutorado) - Universidade Federal de
+% Santa Catarina, Florianópolis, SC, Brasil.
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear all
@@ -204,8 +231,13 @@ clear all
 global mu0 = 4e-7*pi;
 
 %%%%% PARÂMETROS DO MATERIAL %%%%%
-global ms = 1145500; global a = 59; global k = 99; global c = .55;
-global alpha = 1.3e-4;
+% parâmetros fornecidos em [2]
+global ms = 1.47e6; global a = 89; global k = 70; global c = 340e-3;
+global alpha = 169e-6;
+
+% parâmetros fornecidos em [1]
+%global ms = 1145500; global a = 59; global k = 99; global c = .55;
+%global alpha = 1.3e-4;
 
 % fronteira do intervalo [-He/a = -man_iso_lc, He/a = man_iso_lc] dentro do
 % qual M_an é linearmente continuada, evitando divisão por números próximos de
@@ -273,39 +305,74 @@ end
 
 %%%%% DEFINIÇÃO DAS FUNÇÕES DE EXCITAÇÃO %%%%%
 
-% amplitude de indução magnétic
-global B_amp = 1.3;
+% intervalo de simulação
+global ti = 0; global tf = 1;
 
-% frequência da indução magnética
-global B_freq = 1;
+% indução máxima
+global B_max = 1.5;
 
 % B(t)
 function result = B(t)
-  global B_amp; global B_freq;
-  %result = t .* (B_amp*sin(2*pi*B_freq*t));
-  result = (B_amp*sin(2*pi*B_freq*t));
+  % São disponibilizadas diversas curvas `B(t)` para geração de cada um
+  % dos gráficos apresentados no trabalho. Para simular, basta descomentar
+  % a curva desejada e comentar todas as outras. Não esquecer de fazer o
+  % mesmo para dBdt(t).
+
+  global ti; global tf; global B_max;
+
+  % Curva de magnetização inicial
+  %result = t * B_max/(tf-ti);
+
+  % `n-2` laços menores (plotar com no mínimo 100n pontos)
+  %n = 10; T = (tf-ti)/n;
+  %j = floor((t-ti)/T) + 1;
+  %result = j/(n-1) * B_max*sin(2*pi*(2/T)*t);
+
+  % harmônica de nº grau com amplitude relativa h_amp e defasagem phi
+  % caso n = 3
+  %n = 3; h_amp = .3; phi = 15 * pi/180;
+  %result = B_max*(sin(2*pi*(1/(tf-ti))*t) ...
+  %                + h_amp * sin(2*pi*(n/(tf-ti))*t + phi));
+
+  % caso n = 5
+  n = 5; h_amp = .4; phi = 80 * pi/180;
+  result = 1/1.4 * B_max*(sin(2*pi*(1/(tf-ti))*t) ...
+    + h_amp * sin(2*pi*(n/(tf-ti))*t + phi));
 end
 
 % dB
 % --
 % dt
 function result = dBdt(t)
-  global B_amp; global B_freq;
-  %result = B_amp*sin(2*pi*B_freq*t) ...
-  %         + t .* (2*pi*B_freq*B_amp*cos(2*pi*B_freq*t));
-  result = (2*pi*B_freq*B_amp*cos(2*pi*B_freq*t));
+  global ti; global tf; global B_max;
+
+  % magnetização inicial
+  %result = B_max/(tf-ti);
+
+  % `n-2` laços menores (plotar com no mínimo 100n pontos)
+  %n = 10; T = (tf-ti)/n;
+  %j = floor((t-ti)/T) + 1;
+  %result = j/(n-1) * 2*pi*(2/T) * B_max*cos(2*pi*(2/T)*t);
+
+  % harmônica de nº grau com amplitude relativa h_amp e defasagem phi
+  % caso n = 3
+  %n = 3; h_amp = .3; phi = 15 * pi/180;
+  %result = B_max * (2*pi*(1/(tf-ti)) * cos(2*pi*(1/(tf-ti))*t) ...
+  %  + 2*pi*(n/(tf-ti)) * h_amp * cos(2*pi*(n/(tf-ti))*t + phi));
+
+  % caso n = 5
+  n = 5; h_amp = .4; phi = 80 * pi/180;
+  result = 1/1.4 * B_max * (2*pi*(1/(tf-ti)) * cos(2*pi*(1/(tf-ti))*t) ...
+    + 2*pi*(n/(tf-ti)) * h_amp * cos(2*pi*(n/(tf-ti))*t + phi));
 end
 
 %%%%% DEFINIÇÃO DOS PARÂMETROS E RESOLUÇÃO %%%%%
-
-% intervalo de simulação
-ti = 0; tf = 1;
 
 % magnetização inicial (tal que H(ti) = 0)
 M_0 = B(ti)/mu0;
 
 % número de passos no tempo para os quais se tem interesse na solução
-num_steps = 100;
+num_output_steps = 2000;
 
 ode_options = odeset(
   'RelTol', 1e-4,
@@ -317,9 +384,60 @@ f = @(M, t) dmdt(M, B(t), dBdt(t));
 
 %%%%% SOLUÇÃO UTILIZANDO O LSODE %%%%%
 
-sol_time = linspace(ti, tf, num_steps);
-sol = lsode(f, M_0, sol_time);
+sol_time = transpose(linspace(ti, tf, num_output_steps));
+M_vec = lsode(f, M_0, sol_time);
 
 %%%%% VISUALIZAÇÃO %%%%%
 
+% cálculo dos vetores para plotagem
+B_vec = zeros(size(sol_time));
+H_vec = zeros(size(sol_time));
+Man_vec = zeros(size(sol_time));
+Mir_vec = zeros(size(sol_time));
+
+for i=1:length(sol_time)
+  B_vec(i) = B(sol_time(i));
+  H_vec(i) = B_vec(i)/mu0-M_vec(i);
+  He = H_vec(i) + alpha * M_vec(i);
+  Man_vec(i) = man_iso(He);
+  Mir_vec(i) = (M_vec(i) - c * Man_vec(i)) / (1-c);
+end
+
+% salvar valores em arquivo
+%dlmwrite("results.txt", [H_vec, B_vec, Man_vec, Mir_vec], "delimiter", " ", "newline", "\n")
+
+close all
+
+set(0, "defaultlinelinewidth", 2, "defaultaxesfontsize", 12);
+
+% plot do laço de histerese
+figure
+plot(H_vec, B_vec)
+title("Laço de Histerese")
+xlabel("H [A/m]")
+ylabel("B [T]")
+
+% plot do campo magnético no tempo
+figure
+plot(sol_time, H_vec)
+title("Campo Magnético no Tempo")
+xlabel("t [s]")
+ylabel("H [A/m]")
+
+% plot da indução no tempo
+figure
+plot(sol_time, B_vec)
+title("Indução Magnética no Tempo")
+xlabel("t [s]")
+ylabel("B [A/m]")
+
+% plot das componentes da magnetização no tempo
+figure
+hold on
+plot(sol_time, Man_vec*1e-6)
+plot(sol_time, Mir_vec*1e-6)
+title("Componentes da Magnetização no Tempo")
+xlabel("t [s]")
+ylabel("[MA/m]")
+legend("Mag. anisterética", "Mag. irrevesível")
 
