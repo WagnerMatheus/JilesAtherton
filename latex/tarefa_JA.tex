@@ -60,9 +60,7 @@ sendo $t_i$ o tempo inicial, para o qual a magnetização deve ser conhecida de 
   \frac{\partial M}{\partial B} = \frac{\displaystyle \frac{\partial M}{\partial H}}{\displaystyle \mu_0 \left(1 + \frac{\partial M}{\partial H}\right)} \text{,}
 \end{equation}
 \begin{equation}
-  \frac{\partial M}{\partial H} = \frac{\displaystyle c\frac{\partial M_{an}}{\partial H_e} + (1-c)\frac{\partial M_{ir}}{\partial H_e}}
-  {\displaystyle
-  1 - \alpha \left( c\frac{\partial M_{an}}{\partial H_e} + (1-c)\frac{\partial M_{ir}}{\partial H_e}\right)}
+  \frac{\partial M}{\partial H} = \frac{\displaystyle c\frac{\partial M_{an}}{\partial H_e} + (1-c)\frac{\partial M_{ir}}{\partial H_e}}{\displaystyle 1 - \alpha \left( c\frac{\partial M_{an}}{\partial H_e} + (1-c)\frac{\partial M_{ir}}{\partial H_e}\right)} \text{,}
 \end{equation}
 
 sendo $\alpha$ (acoplamento inter-domínio) e $c$ (reversibilidade da magnetização) parâmetros do modelo, $\mu_0$ a permeabilidade magnética do vácuo, $H$ o campo magnético e (baseando-se em Bergqvist \cite{dular} para evitar comportamento não físico na derivada de $M_{ir}$)
@@ -79,7 +77,7 @@ sendo $\alpha$ (acoplamento inter-domínio) e $c$ (reversibilidade da magnetiza�
   \end{cases} \text{,}
 \end{equation}
 
-sendo $M_s$ (magnetização de saturação), $a$ (densidade de paredes de domínio) e $k$ (energia média necessária para romper ``fixamento'' (pinning)) parâmetros do modelo e
+sendo $M_s$ (magnetização de saturação), $a$ (densidade de paredes de domínio) e $k$ (energia média necessária para romper ``fixamento'' (\textit{pinning})) parâmetros do modelo e
 \begin{equation} \label{mir}
   M_{ir} = \frac{M - c M_{an}}{1-c} \text{.}
 \end{equation}
@@ -237,9 +235,9 @@ sendo $n$ o número de laços de histerese desejados e $\lfloor x \rfloor$ denot
 \end{equation}
 e apresentada na figura \ref{b3}. Essa simulação tem o objetivo de visualizar os laços de histerese menores, causados pela harmônica na excitação, conforme apresentado na figura \ref{l3}.
 
-\hspace{1cm} Apareceram 3 laços de histerese, conforme o esperado para uma excitação com {3\textordfeminine} harmônica de amplitude relevante. Como aqui a indução inicial não é nula, mas o campo magnético sim, o gráfico do laço de histerese não se inicia no ponto (0,0).
+\hspace{1cm} Apareceram 3 laços de histerese, conforme o esperado para uma excitação com {3\textordfeminine} harmônica de amplitude relevante. Como aqui a indução inicial não é nula, mas o campo magnético sim, o gráfico do laço de histerese não se inicia no ponto (0, 0).
 
-\hspace{1cm} A figura \ref{h3} apresenta o campo magnético, nota-se uma forma de onda bastante distorcida pela não linearidade do material magnético.
+\hspace{1cm} A figura \ref{h3} apresenta o campo magnético, nota-se uma forma de onda bastante distorcida pela não linearidade do material magnético. Pelo gráfico, a {3\textordfeminine} harmônica aparenta ter sido amplificada no campo magnético.
 
 \hspace{1cm} Por fim, também são apresentadas as duas componentes da magnetização na figura \ref{c3}. Aqui também percebe-se em certos intervalos que a magnetização irreversível fica constante.
 
@@ -284,11 +282,11 @@ e apresentada na figura \ref{b3}. Essa simulação tem o objetivo de visualizar 
 \end{equation}
 e apresentada na figura \ref{b4}. Essa simulação tem o objetivo de visualizar os laços de histerese menores, causados pela harmônica na excitação, conforme apresentado na figura \ref{l4}.
 
-\hspace{1cm} Apareceram 5 laços de histerese, conforme o esperado para uma excitação com {5\textordfeminine} harmônica de amplitude relevante. Como aqui a indução inicial não é nula, mas o campo magnético sim, o gráfico do laço de histerese também não se inicia no ponto (0,0).
+\hspace{1cm} Apareceram 5 laços de histerese, conforme o esperado para uma excitação com {5\textordfeminine} harmônica de amplitude relevante. Como aqui a indução inicial não é nula, mas o campo magnético sim, o gráfico do laço de histerese também não se inicia no ponto (0, 0).
 
-\hspace{1cm} A figura \ref{h4} apresenta o campo magnético, nota-se aqui também uma forma de onda bastante distorcida pela não linearidade do material magnético.
+\hspace{1cm} A figura \ref{h4} apresenta o campo magnético, nota-se aqui também uma forma de onda bastante distorcida pela não linearidade do material magnético. Neste gráfico a {5\textordfeminine} harmônica é mais aparente no sinal do que a própria fundamental.
 
-\hspace{1cm} Por fim, também são apresentadas as duas componentes da magnetização na figura \ref{c4}. Os comentários anteriores permanecem válidos para esta simulação.
+\hspace{1cm} Por fim, também são apresentadas as duas componentes da magnetização na figura \ref{c4}. Os comentários anteriores acerca da magnetização permanecem válidos para esta simulação.
 
 \begin{figure}[!h]
   \begin{minipage}{.49\linewidth}
