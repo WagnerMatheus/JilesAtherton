@@ -15,10 +15,9 @@
 % pode ser formulado para que a magnetização total (M) seja a variável de
 % estado.
 %
-%   Não houve problemas com essa formulação no problema escalar, ao menos nos
-% casos testados com magnetização inicial nula. Já no caso vetorial
-% (Bergqvist) [1], algumas questões numéricas fazem com que a formulação
-% baseada em `M_ir` seja cerca de 500x mais eficiente.
+%   Não houve problemas com essa formulação no problema escalar. Já no caso
+% vetorial (Bergqvist) [1], algumas questões numéricas fazem com que a
+% formulação baseada em `M_ir` seja cerca de 500x mais eficiente.
 %
 %   Além disso, levando em consideração que em modelos de elementos finitos a
 % variável de estado é comumente o potencial (vetor) magnético, de onde se
@@ -405,7 +404,7 @@ for i=1:length(sol_time)
 end
 
 % salvar valores em arquivo
-dlmwrite("results.txt", [sol_time, H_vec, B_vec, Man_vec, Mir_vec], "delimiter", " ", "newline", "\n")
+%dlmwrite("results.txt", [sol_time, H_vec, B_vec, Man_vec, Mir_vec], "delimiter", " ", "newline", "\n")
 
 close all
 

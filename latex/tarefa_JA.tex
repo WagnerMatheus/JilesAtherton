@@ -11,130 +11,321 @@
 \usepackage{siunitx}
 \usepackage{icomma}
 
+\usepackage[backend=biber, sorting=none]{biblatex}
+\addbibresource{references.bib}
+
+\newcommand{\dx}{\mathop{}\!{d}}
+
 %\usepackage{tabularx}
 %\usepackage{multirow}
 
-\title{Materiais Elétricos e Magnéticos\\Tarefa 3}
+\title{EEL510236: Materiais Elétricos e Magnéticos\\Tarefa 3\\\phantom{a}\\\Large Implementação do modelo de Jiles-Atherton escalar}
+
 \author{Matheus Henrique Wagner}
+
 \date{Maio 2025}
 
 \begin{document}
 
 \maketitle
 
+\hspace{1cm} Este trabalho apresenta uma implementação do modelo de Jiles-Atherton escalar \cite{ja} para cálculo da histerese magnética em materiais magnéticos. A implementação consiste na resolução do Problema de Valor Inicial (PVI) descrito pelo modelo e foi realizada na linguagem de \textit{scripting} Octave, variante de código aberto muito semelhante ao MATLAB.
+
+\hspace{1cm} No primeiro exercício será apresentado o modelo e o método de solução, nos demais serão apresentados os resultados em diferentes regimes de operação (diferentes formas de onda de excitação).
+
+\exercise
+
+\hspace{1cm} De acordo com o modelo de Jiles-Atherton, a histerese magnética é modelada através de uma Equação Diferencial Ordinária (EDO) no tempo ($t$). A variável a ser integrada (ou variável dinâmica, também às vezes chamada de variável de estado) é a magnetização irreversível ($M_{ir}$) do material. O modelo também pode ser formulado para que a magnetização total ($M$) seja a variável de estado.
+
+\hspace{1cm} Não houve problemas com a formulação utilizando $M$ como variável de estado no problema escalar. Já no caso vetorial (Bergqvist) \cite{dular}, algumas questões numéricas fazem com que a formulação baseada em $M_{ir}$ seja cerca de 500$\times$ mais eficiente.
+
+\hspace{1cm} Além disso, levando em consideração que em modelos de elementos finitos a variável de estado é comumente o potencial (vetor) magnético, de onde se encontra de forma direta a indução magnética, a formulação aqui utilizada toma como excitação a indução, diferentemente do modelo original, que é excitado por campo magnético. Essa formulação também é chamada de modelo de Jiles-Atherton inverso \cite{joe}.
+
+\newpage
+
+\subsection{Formulação}
+
+\hspace{1cm} Neste trabalho a formulação com a magnetização total ($M$) sendo a variável de estado é utilizada. Ou seja, o problema a ser resolvido é
+\begin{equation}
+  M(t) = M(t_i) + \int_{t_i}^{t} \frac{\partial M}{\partial t} \dx t \text{,}
+\end{equation}
+
+sendo $t_i$ o tempo inicial, para o qual a magnetização deve ser conhecida de antemão.
+
+\hspace{1cm} Utilizando como excitação a indução magnética ($B$), temos \cite{dular, joe}
+\begin{equation}
+  \frac{\partial M}{\partial t} = \frac{\partial M}{\partial B} \frac{\partial B}{\partial t} \text{,}
+\end{equation}
+\begin{equation}
+  \frac{\partial M}{\partial B} = \frac{\displaystyle \frac{\partial M}{\partial H}}{\displaystyle \mu_0 \left(1 + \frac{\partial M}{\partial H}\right)} \text{,}
+\end{equation}
+\begin{equation}
+  \frac{\partial M}{\partial H} = \frac{\displaystyle c\frac{\partial M_{an}}{\partial H_e} + (1-c)\frac{\partial M_{ir}}{\partial H_e}}
+  {\displaystyle
+  1 - \alpha \left( c\frac{\partial M_{an}}{\partial H_e} + (1-c)\frac{\partial M_{ir}}{\partial H_e}\right)}
+\end{equation}
+
+sendo $\alpha$ (acoplamento inter-domínio) e $c$ (reversibilidade da magnetização) parâmetros do modelo, $\mu_0$ a permeabilidade magnética do vácuo, $H$ o campo magnético e (baseando-se em Bergqvist \cite{dular} para evitar comportamento não físico na derivada de $M_{ir}$)
+\begin{equation}
+  H_e = H + \alpha M \text{,}
+\end{equation}
+\begin{equation}
+  M_{an} = M_s \left(coth(H_e/a) - (a/H_e)\right) \text{,}
+\end{equation}
+\begin{equation} \label{dmir}
+  \frac{\partial M_{ir}}{\partial H_e} = \begin{cases}
+    \displaystyle \frac{\lvert M_{an} - M_{ir} \rvert}{k} & \text{se } \left(M_{an} - M_{ir}\right) \frac{\partial H}{\partial t} > 0 \\
+    \displaystyle\hfil 0 & \text{caso contrário}
+  \end{cases} \text{,}
+\end{equation}
+
+sendo $M_s$ (magnetização de saturação), $a$ (densidade de paredes de domínio) e $k$ (energia média necessária para romper ``fixamento'' (pinning)) parâmetros do modelo e
+\begin{equation} \label{mir}
+  M_{ir} = \frac{M - c M_{an}}{1-c} \text{.}
+\end{equation}
+
+\hspace{1cm} Neste trabalho, $\frac{\partial H}{\partial t}$ na equação \ref{dmir} será substituído por $\frac{\partial B}{\partial t}$, visto que a derivada de ambos no caso escalar tem o mesmo sinal, assim
+\begin{equation}
+  \frac{\partial M_{ir}}{\partial H_e} = \begin{cases}
+    \displaystyle \frac{\lvert M_{an} - M_{ir} \rvert}{k} & \text{se } \left(M_{an} - M_{ir}\right) \frac{\partial B}{\partial t} > 0 \\
+    \displaystyle\hfil 0 & \text{caso contrário}
+  \end{cases} \text{.}
+\end{equation}
+
+\hspace{1cm} Também nota-se que na equação \ref{mir} fica implícita a relação entre as componentes reversível ($M_{an}$) e irreversível ($M_{ir}$) da magnetização total ($M$):
+\begin{equation}
+  M = c M_{an} + (1-c) M_{ir}\text{.}
+\end{equation}
+
+\subsection{Resolução}
+
+\hspace{1cm} A resolução numérica de PVIs é realizada através de integradores. Esse tópico é tema de pesquisa há várias décadas, pois é fundamental para muitas áreas da física e engenharia. Na elétrica, qualquer estudo transiente de equipamento ou circuito precisa resolver numericamente um PVI. Dessa forma, existem diversos algoritmos exaustivamente estudados e testados à disposição do engenheiro.
+
+\hspace{1cm} Neste trabalho, é relevante que os algoritmos implementados para resolução de PVIs ditos explícitos (caso do modelo de Jiles-Atherton) são padronizados para ter como ``entrada'' a função $f(x, t)$ definida por
+\begin{equation} \label{pvi}
+  f(x, t) = \frac{\partial x}{\partial t} \text{,}
+\end{equation}
+
+sendo $x$ a variável de estado, o valor inicial ($x_0$) e o intervalo de integração $[t_i, t_f]$. Neste trabalho o valor inicial da magnetização será escolhido de forma a zerar o campo magnético, ou seja,
+\begin{equation}
+  M(t_i) = \frac{B(t_i)}{\mu_0} \text{.}
+\end{equation}
+
+\hspace{1cm} A biblioteca padrão da linguagem Octave fornece diversos integradores para resolução do PVI da equação \ref{pvi}. Neste trabalho for utilizada a rotina \texttt{lsode}, que é um envólucro (\textit{wrapper}) da rotina \texttt{LSODE}, da biblioteca (Fortran 77) ODEPACK.
+
+\hspace{1cm} O \textit{script} desenvolvido para simulação (integração) deste PVI foi enviado em anexo e também será disponibilizado para execução através do link \url{https://octave-online.net/workspace~afrqkndQgtEXNgCGTdPQCnxbcHehzbjhXwikwxfcRFZpyxVj} por tempo indeterminado.
+
+\hspace{1cm} Os parâmetros do modelo de histerese utilizados para simulação provém de \cite{joe}, tabela 6.1, coluna ``Conhecido''. Eles são apresentados na tabela \ref{tab}.
+\begin{table}[!h]
+  \centering
+  \begin{tabular}{|c|c|}
+    \hline
+    $M_s~[\si{\ampere\per\meter}]$ & $1,47\times 10^6$   \\
+    \hline
+    $k~[\si{\ampere\per\meter}]$   & $70,0$              \\
+    \hline
+    $c$                            & $340\times 10^{-3}$ \\
+    \hline
+    $a~[\si{\ampere\per\meter}]$   & $89,0$              \\
+    \hline
+    $\alpha$                       & $169\times 10^{-6}$ \\
+    \hline
+  \end{tabular}
+  \caption{Parâmetros do material magnético}
+  \label{tab}
+\end{table}
+
+\exercise
+
+\hspace{1cm} Neste exercício o modelo é simulado para uma excitação $B$ em forma de reta, especificada por
+\begin{equation}
+  B(t) = 1,5~\frac{t}{t_f-t_i}
+\end{equation}
+e apresentada na figura \ref{b1}. Essa simulação tem o objetivo de encontrar a curva de magnetização inicial do material, apresentada na figura \ref{l1}.
+
+\hspace{1cm} A curva de magnetização inicial apresenta as características esperadas, permeabilidade inicialmente mais baixa, aumentando e chegando na região linear e, posteriormente, saturando.
+
+\hspace{1cm} A figura \ref{h1} apresenta o campo magnético, nota-se que, por conta da saturação, o campo precisa subir muito na parte final para manter o aumento na indução.
+
+\hspace{1cm} Por fim, também são apresentadas as duas componentes da magnetização na figura \ref{c1}. Percebe-se que a magnetização irreversível ``segue'' a anisterética, algo previsto pela equação \ref{dmir}.
+
 \begin{figure}[!h]
   \begin{minipage}{.49\linewidth}
     \centering
-    \input{plots/magnetização_inicial/laço_histerese.tex}
-    \vspace{-1cm}
-    \caption{uma caption}
+    \input{plots/magnetização_inicial/indução.tex}
+    \vspace{-.5cm}
+    \caption{Indução magnética}
+    \label{b1}
   \end{minipage}%
   \begin{minipage}{.49\linewidth}
     \centering
-    \input{plots/magnetização_inicial/indução.tex}
-    \vspace{-1cm}
-    \caption{HHHHHHHHHHHHHHH}
+    \input{plots/magnetização_inicial/laço_histerese.tex}
+    \vspace{-.5cm}
+    \caption{Curva de magnetização inicial}
+    \label{l1}
   \end{minipage}
+\end{figure}
+\begin{figure}[!h]
   \begin{minipage}{.49\linewidth}
     \centering
     \input{plots/magnetização_inicial/campo.tex}
-    \vspace{-1cm}
-    \caption{uma caption}
+    \vspace{-.5cm}
+    \caption{Campo magnético}
+    \label{h1}
   \end{minipage}%
   \begin{minipage}{.49\linewidth}
     \centering
     \input{plots/magnetização_inicial/componentes.tex}
-    \vspace{-1cm}
-    \caption{HHHHHHHHHHHHHHH}
+    \vspace{-.5cm}
+    \caption{Componentes da magnetização}
+    \label{c1}
   \end{minipage}%
 \end{figure}
 
-\newpage
+\exercise
+
+\hspace{1cm} Neste exercício o modelo é simulado para uma excitação $B$ senoidal, cuja amplitude é gradativamente aumentada, especificada por
+\begin{equation}
+  B(t) = 1,4~\frac{\left\lfloor\displaystyle n\frac{\displaystyle t-t_i}{\displaystyle t_f-t_i}\right\rfloor + 1}{n}\mathrm{sen}\left(2\pi \left(\frac{2n}{t_f-t_i}\right) t\right) \text{,}
+\end{equation}
+sendo $n$ o número de laços de histerese desejados e $\lfloor x \rfloor$ denota a função piso (arredondamento para baixo). A indução é apresentada na figura \ref{b2}. Essa simulação tem o objetivo de visualizar os laços de histerese em diversas amplitudes, conforme apresentado na figura \ref{l2}.
+
+\hspace{1cm} Os laços de histeres apresentam as características esperadas, aumentando gradativamente e também apresentando laços de menor amplitude estritamente dentro dos de maior amplitude.
+
+\hspace{1cm} A figura \ref{h2} apresenta o campo magnético, nota-se que, na região linear o campo é mais próximo de uma senoide, porém vai sendo distorcido a medida que o material satura.
+
+\hspace{1cm} Por fim, também são apresentadas as duas componentes da magnetização na figura \ref{c2}. Percebe-se em certos intervalos que a magnetização irreversível fica constante. Isso decorre diretamente do método empregado para evitar comportamento não físico na equação \ref{dmir}.
 
 \begin{figure}[!h]
   \begin{minipage}{.49\linewidth}
     \centering
-    \input{plots/amplitudes/laço_histerese.tex}
-    \vspace{-1cm}
-    \caption{uma caption}
+    \input{plots/amplitudes/indução.tex}
+    \vspace{-.5cm}
+    \caption{Indução magnética}
+    \label{b2}
   \end{minipage}%
   \begin{minipage}{.49\linewidth}
     \centering
-    \input{plots/amplitudes/indução.tex}
-    \vspace{-1cm}
-    \caption{HHHHHHHHHHHHHHH}
+    \input{plots/amplitudes/laço_histerese.tex}
+    \vspace{-.5cm}
+    \caption{Laços de histerese}
+    \label{l2}
   \end{minipage}
+\end{figure}
+\begin{figure}[!h]
   \begin{minipage}{.49\linewidth}
     \centering
     \input{plots/amplitudes/campo.tex}
-    \vspace{-1cm}
-    \caption{uma caption}
+    \vspace{-.5cm}
+    \caption{Campo magnético}
+    \label{h2}
   \end{minipage}%
   \begin{minipage}{.49\linewidth}
     \centering
     \input{plots/amplitudes/componentes.tex}
-    \vspace{-1cm}
-    \caption{HHHHHHHHHHHHHHH}
+    \vspace{-.5cm}
+    \caption{Componentes da magnetização}
+    \label{c2}
   \end{minipage}%
 \end{figure}
 
-\newpage
+\exercise
+
+\hspace{1cm} Neste exercício o modelo é simulado para uma excitação $B$ com {3\textordfeminine} harmônica, especificada por
+\begin{equation}
+  B(t) = \frac{1,5}{1,3} \left(\mathrm{sen}\left(2\pi \frac{2}{t_f-t_i} t\right) + \frac{1}{2} \mathrm{sen}\left(2\pi\times 3 \frac{2}{t_f-t_i} t + \frac{\pi}{6}\right)\right)
+\end{equation}
+e apresentada na figura \ref{b3}. Essa simulação tem o objetivo de visualizar os laços de histerese menores, causados pela harmônica na excitação, conforme apresentado na figura \ref{l3}.
+
+\hspace{1cm} Apareceram 3 laços de histerese, conforme o esperado para uma excitação com {3\textordfeminine} harmônica de amplitude relevante. Como aqui a indução inicial não é nula, mas o campo magnético sim, o gráfico do laço de histerese não se inicia no ponto (0,0).
+
+\hspace{1cm} A figura \ref{h3} apresenta o campo magnético, nota-se uma forma de onda bastante distorcida pela não linearidade do material magnético.
+
+\hspace{1cm} Por fim, também são apresentadas as duas componentes da magnetização na figura \ref{c3}. Aqui também percebe-se em certos intervalos que a magnetização irreversível fica constante.
 
 \begin{figure}[!h]
   \begin{minipage}{.49\linewidth}
     \centering
-    \input{plots/harmônicas/3o_grau/laço_histerese.tex}
-    \vspace{-1cm}
-    \caption{uma caption}
-  \end{minipage}%
-  \begin{minipage}{.49\linewidth}
-    \centering
     \input{plots/harmônicas/3o_grau/indução.tex}
-    \vspace{-1cm}
-    \caption{HHHHHHHHHHHHHHH}
+    \vspace{-.5cm}
+    \caption{Laço de histerese}
+    \label{b3}
   \end{minipage}
   \begin{minipage}{.49\linewidth}
     \centering
+    \input{plots/harmônicas/3o_grau/laço_histerese.tex}
+    \vspace{-.5cm}
+    \caption{Indução magnética}
+    \label{l3}
+  \end{minipage}
+\end{figure}
+\begin{figure}[!h]
+  \begin{minipage}{.49\linewidth}
+    \centering
     \input{plots/harmônicas/3o_grau/campo.tex}
-    \vspace{-1cm}
-    \caption{uma caption}
+    \vspace{-.5cm}
+    \caption{Campo magnético}
+    \label{h3}
   \end{minipage}%
   \begin{minipage}{.49\linewidth}
     \centering
     \input{plots/harmônicas/3o_grau/componentes.tex}
-    \vspace{-1cm}
-    \caption{HHHHHHHHHHHHHHH}
+    \vspace{-.5cm}
+    \caption{Componentes da magnetização}
+    \label{c3}
   \end{minipage}%
 \end{figure}
 
-\newpage
+\exercise
+
+\hspace{1cm} Neste exercício o modelo é simulado para uma excitação $B$ com {5\textordfeminine} harmônica, especificada por
+\begin{equation}
+  B(t) = \frac{1,5}{1,6} \left(\mathrm{sen}\left(2\pi \frac{2}{t_f-t_i} t\right) + \frac{1}{2} \mathrm{sen}\left(2\pi\times 5 \frac{2}{t_f-t_i} t + \frac{4\pi}{9}\right)\right)
+\end{equation}
+e apresentada na figura \ref{b4}. Essa simulação tem o objetivo de visualizar os laços de histerese menores, causados pela harmônica na excitação, conforme apresentado na figura \ref{l4}.
+
+\hspace{1cm} Apareceram 5 laços de histerese, conforme o esperado para uma excitação com {5\textordfeminine} harmônica de amplitude relevante. Como aqui a indução inicial não é nula, mas o campo magnético sim, o gráfico do laço de histerese também não se inicia no ponto (0,0).
+
+\hspace{1cm} A figura \ref{h4} apresenta o campo magnético, nota-se aqui também uma forma de onda bastante distorcida pela não linearidade do material magnético.
+
+\hspace{1cm} Por fim, também são apresentadas as duas componentes da magnetização na figura \ref{c4}. Os comentários anteriores permanecem válidos para esta simulação.
 
 \begin{figure}[!h]
   \begin{minipage}{.49\linewidth}
     \centering
-    \input{plots/harmônicas/5o_grau/laço_histerese.tex}
-    \vspace{-1cm}
-    \caption{uma caption}
+    \input{plots/harmônicas/5o_grau/indução.tex}
+    \vspace{-.5cm}
+    \caption{Indução magnética}
+    \label{b4}
   \end{minipage}%
   \begin{minipage}{.49\linewidth}
     \centering
-    \input{plots/harmônicas/5o_grau/indução.tex}
-    \vspace{-1cm}
-    \caption{HHHHHHHHHHHHHHH}
+    \input{plots/harmônicas/5o_grau/laço_histerese.tex}
+    \vspace{-.5cm}
+    \caption{Laço de histerese}
+    \label{l4}
   \end{minipage}
+\end{figure}
+\begin{figure}[!h]
   \begin{minipage}{.49\linewidth}
     \centering
     \input{plots/harmônicas/5o_grau/campo.tex}
-    \vspace{-1cm}
-    \caption{uma caption}
+    \vspace{-.5cm}
+    \caption{Campo magnético}
+    \label{h4}
   \end{minipage}%
   \begin{minipage}{.49\linewidth}
     \centering
     \input{plots/harmônicas/5o_grau/componentes.tex}
-    \vspace{-1cm}
-    \caption{HHHHHHHHHHHHHHH}
-  \end{minipage}%
+    \vspace{-.5cm}
+    \caption{Componentes da magnetização}
+    \label{c4}
+  \end{minipage}
 \end{figure}
+
+\newpage
+
+\printbibliography
 
 %\newpage
 
