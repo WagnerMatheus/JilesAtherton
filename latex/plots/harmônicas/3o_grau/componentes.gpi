@@ -1,0 +1,25 @@
+set terminal tikz size 7.5,5
+set output 'componentes.tex'
+load "../../palette-purd.pal"
+
+set decimalsign ','
+
+set key right top
+set key spacing 1.25
+set key box opaque
+
+unset colorbox
+
+#set xrange [-250:250]
+#set xtics (-250, -125, 0, 125, 250)
+
+set xlabel "$t$ [\\si{\\second}]"
+set ylabel "$M$ [\\si{\\mega\\ampere\\per\\meter}]" offset -1,0
+
+set grid
+
+plot "results_3o_grau.txt" using 1:($4*1e-6) with lines title "\\phantom{M}$M_{an}$" palette frac .5, \
+     "results_3o_grau.txt" using 1:($5*1e-6) with lines title "\\phantom{M}$M_{ir}$" palette frac 1
+
+
+

@@ -1,0 +1,395 @@
+\documentclass{homeworg}
+
+\usepackage{amsmath, cancel, subcaption}
+\usepackage[shortlabels]{enumitem}
+\usepackage[export]{adjustbox}
+%\usepackage[american, nooldvoltagedirection]{circuitikz}
+
+\usepackage{booktabs}
+
+\usepackage{gnuplot-lua-tikz}
+\usepackage{siunitx}
+\usepackage{icomma}
+
+%\usepackage{tabularx}
+%\usepackage{multirow}
+
+\title{Materiais Elétricos e Magnéticos\\Tarefa 3}
+\author{Matheus Henrique Wagner}
+\date{Maio 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{figure}[!h]
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/magnetização_inicial/laço_histerese.tex}
+    \vspace{-1cm}
+    \caption{uma caption}
+  \end{minipage}%
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/magnetização_inicial/indução.tex}
+    \vspace{-1cm}
+    \caption{HHHHHHHHHHHHHHH}
+  \end{minipage}
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/magnetização_inicial/campo.tex}
+    \vspace{-1cm}
+    \caption{uma caption}
+  \end{minipage}%
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/magnetização_inicial/componentes.tex}
+    \vspace{-1cm}
+    \caption{HHHHHHHHHHHHHHH}
+  \end{minipage}%
+\end{figure}
+
+\newpage
+
+\begin{figure}[!h]
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/amplitudes/laço_histerese.tex}
+    \vspace{-1cm}
+    \caption{uma caption}
+  \end{minipage}%
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/amplitudes/indução.tex}
+    \vspace{-1cm}
+    \caption{HHHHHHHHHHHHHHH}
+  \end{minipage}
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/amplitudes/campo.tex}
+    \vspace{-1cm}
+    \caption{uma caption}
+  \end{minipage}%
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/amplitudes/componentes.tex}
+    \vspace{-1cm}
+    \caption{HHHHHHHHHHHHHHH}
+  \end{minipage}%
+\end{figure}
+
+\newpage
+
+\begin{figure}[!h]
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/harmônicas/3o_grau/laço_histerese.tex}
+    \vspace{-1cm}
+    \caption{uma caption}
+  \end{minipage}%
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/harmônicas/3o_grau/indução.tex}
+    \vspace{-1cm}
+    \caption{HHHHHHHHHHHHHHH}
+  \end{minipage}
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/harmônicas/3o_grau/campo.tex}
+    \vspace{-1cm}
+    \caption{uma caption}
+  \end{minipage}%
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/harmônicas/3o_grau/componentes.tex}
+    \vspace{-1cm}
+    \caption{HHHHHHHHHHHHHHH}
+  \end{minipage}%
+\end{figure}
+
+\newpage
+
+\begin{figure}[!h]
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/harmônicas/5o_grau/laço_histerese.tex}
+    \vspace{-1cm}
+    \caption{uma caption}
+  \end{minipage}%
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/harmônicas/5o_grau/indução.tex}
+    \vspace{-1cm}
+    \caption{HHHHHHHHHHHHHHH}
+  \end{minipage}
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/harmônicas/5o_grau/campo.tex}
+    \vspace{-1cm}
+    \caption{uma caption}
+  \end{minipage}%
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{plots/harmônicas/5o_grau/componentes.tex}
+    \vspace{-1cm}
+    \caption{HHHHHHHHHHHHHHH}
+  \end{minipage}%
+\end{figure}
+
+%\newpage
+
+%Uma forma de onda muito comum na elétrica, sendo inclusive a da tensão na rede, é a senoidal. Uma onda senoidal ($V(t)$) é matematicamente dada especificada por
+%\begin{equation}
+%  V(t) = V_p sen(\omega t) \text{,}
+%\end{equation}
+%
+%\noindent sendo $V_p$ o valor de pico da tensão (ou amplitude) e $\omega = 2\pi f$, sendo $f$ a frequência do sinal.
+%
+%\exercise Plote 3 períodos $T = f^{-1}$ de uma onda senoidal: a figura \ref{fig_1} apresenta 3 períodos de uma onda senoidal utilizando os parâmetros da tabela \ref{tab_1}.
+%
+%\begin{table}[!h]
+%  %\fontsize{10pt}{10pt}\selectfont
+%  \centering
+%  \caption{Parâmetros da forma de onda senoidal de tensão}
+%  \label{tab_1}
+%  \begin{tabular}{ccc}
+%    \toprule
+%    Parâmetro & Valor \\
+%    \midrule
+%    Amplitude & $1~\si{\volt}$ \\
+%    Frequência & $60~\si{\hertz}$ \\
+%    \bottomrule
+%  \end{tabular}
+%\end{table}
+%
+%\begin{figure}[!h]
+%  \centering
+%  \caption{Forma de onda senoidal de tensão}
+%  \label{fig_1}
+%  \makebox[0pt][c]{\includegraphics[scale=.333333333333333]{v.png}}
+%\end{figure}
+%
+%\exercise Analise matematicamente o comportamento da corrente em um dispositivo indutivo quando nele chaveada um tensão senoidal no instante $V(t) = 0$, $V^\prime(t) > 0$. Considere que esse instante ocorre em $t = 0$. Considere também resistência elétrica desprezível.
+%
+%A corrente ($I$) em um dispositivo de indutância ($L$), obedece
+%\begin{equation} \label{l}
+%  \frac{dI}{dt} = \frac{V}{L}\text{.}
+%\end{equation}
+%
+%Integrando a equação \ref{l}, obtemos 
+%\begin{equation} \label{l2}
+%  I(t) = \int_0^t\frac{V}{L}dt = \frac{V_p}{L} \int_0^t sen(\omega t) dt = \frac{V_p}{L} [-cos(\omega t) + cos(\omega 0)] = -\frac{V_p}{L} cos(\omega t) + \frac{V_p}{L}\text{.}
+%\end{equation}
+%
+%A figura \ref{fig_2} apresenta a forma de onda da corrente considerando-se $L = 1$.
+%
+%\begin{figure}[!h]
+%  \centering
+%  \caption{Forma de onda da corrente}
+%  \label{fig_2}
+%  \makebox[0pt][c]{\includegraphics[scale=.333333333333333]{i.png}}
+%\end{figure}
+%
+%Note que, por conta do valor constante na integral da senoide, obtivemos um \textit{offset} na forma de onda da corrente e um alto valor de pico ($2V_p/L$).
+
+
+%
+%  \newpage
+%
+%  \item Formas de onda:
+%
+%  \begin{figure}[h]
+%    \centering
+%    \begin{subfigure}[t]{.47\textwidth}
+%      \includegraphics[width=68mm, right]{vl.png}
+%      \caption{$v_L$}
+%    \end{subfigure}
+%    \begin{subfigure}[t]{.52\textwidth}
+%      \centering
+%      \includegraphics[width=81mm, right]{ic.png}
+%      \caption{$i_C$}
+%    \end{subfigure}
+%    \begin{subfigure}[t]{.47\textwidth}
+%      \centering
+%      \includegraphics[width=74.5mm, right]{vc.png}
+%      \caption{$v_C$}
+%    \end{subfigure}
+%    \begin{subfigure}[t]{.52\textwidth}
+%      \centering
+%      \includegraphics[width=74.5mm, right]{il.png}
+%      \caption{$i_L$}
+%    \end{subfigure}
+%    \caption{Formas de onda no conversor.}
+%  \end{figure}
+%
+%\end{enumerate}
+%
+%\exercise
+%
+%Obtenha a equação de ganho estático com perdas. Para tanto, modele as perdas no indutor por uma resistência $R_L$, as perdas nos interruptores por uma resistência $R_{ON}$, e as perdas nos diodos por uma queda de tensão $V_D$.
+%
+%\begin{enumerate}[(a)]
+%
+%  \item Etapas de operação:
+%
+%  \begin{itemize}
+%
+%    \item Modo 1:
+%
+%    \begin{center}
+%      \begin{tikzpicture}[scale=.9]
+%        \ctikzset{bipoles/length=1.26cm}
+%        \draw[color=black, thick]
+%        (-2.5, 0)
+%        to [V, v=$V_i$, invert] (-2.5, 2.5)
+%        to [R, l=$R_{ON}$] (0, 2.5)
+%        to [R, l=$R_L$] (2.5, 2.5)
+%        to [L, l=$L_1$, v=$v_L$] (5, 2.5)
+%        to [open] (7.5, 2.5)
+%        to [C, l=$C_1$, i>^=$i_C$] (7.5, 0)
+%        (7.5, 2.5)
+%        to [short] (10, 2.5)
+%        to [R, l=$R$, v=$V_o$, label distance=100pt] (10, 0)
+%        to [short] (7.5, 0)
+%        to [short] (5, 0)
+%        to [R, l=$R_{ON}$] (5, 2.5)
+%        (5, 0)
+%        to [short] (2.5, 0)
+%        to [open] (2.5, 2.5)
+%        (2.5, 0)
+%        to [short] (-2.5, 0);
+%      \end{tikzpicture}
+%    \end{center}
+%  
+%    Equações:
+%
+%    \begin{equation*}
+%      v_L = V_i - \left(2R_{ON} + R_L \right) I_L = L_1 \frac{di_L}{dt}
+%    \end{equation*}
+%
+%    \begin{equation*}
+%      i_C = -\frac{V_o}{R} = C_1 \frac{dv_C}{dt}
+%    \end{equation*}
+%
+%    \item Modo 2:
+%
+%    \begin{center}
+%      \begin{tikzpicture}[scale=.9]
+%        \ctikzset{bipoles/length=1.26cm}
+%        \draw[color=black, thick]
+%        (-2.5, 0)
+%        to [V, v=$V_i$, invert] (-2.5, 2.5)
+%        to [open] (0, 2.5)
+%        to [R, l=$R_L$] (2.5, 2.5)
+%        to [L, l=$L_1$, v=$v_L$] (5, 2.5)
+%        to [short] (5, 2.5)
+%        to [V, v=$V_D$] (7.5, 2.5)
+%        to [C, l=$C_1$, i>^=$i_C$] (7.5, 0)
+%        (7.5, 2.5)
+%        to [short] (10, 2.5)
+%        to [R, l=$R$, v=$V_o$, label distance=100pt] (10, 0)
+%        to [short] (7.5, 0)
+%        to [short] (0, 0)
+%        to [V, v=$V_D$] (0, 2.5)
+%        (2.5, 0)
+%        to [short] (-2.5, 0);
+%      \end{tikzpicture}
+%    \end{center}
+%
+%    Equações:
+%
+%    \begin{equation*}
+%      v_L = -(V_o + 2V_D + R_L I_L) = L_1 \frac{di_L}{dt}
+%    \end{equation*}
+%
+%    \begin{equation*}
+%      i_C = I_L -\frac{V_o}{R} = C_1 \frac{dv_C}{dt}
+%    \end{equation*}
+%
+%  \end{itemize}
+%
+%  \item Ganho estático:
+%
+%  O ganho estático pode ser encontrado sabendo que, em um período, $\langle v_L \rangle = 0$:
+%
+%  \begin{equation*}
+%    \langle v_L \rangle = \frac{1}{T_s} \left[ \left(V_i - \left(2R_{ON} + R_L \right) I_L \right) D T_s - \left(V_o + 2V_D + R_L I_L \right) (1-D) T_s \right ] = 0 
+%  \end{equation*}%
+%  \begin{equation*}
+%    V_i D - \left(2 R_{ON} D + R_L \right) I_L - \left(1-D \right) V_o - \left(1-D \right) 2 V_D = 0
+%  \end{equation*}%
+%  \begin{equation*}
+%    I_L = \frac{V_o}{\left(1-D \right) R} \text{, } \; \alpha = \frac{2 R_{ON} D + R_L}{\left(1-D \right) R}
+%  \end{equation*}
+%  \begin{equation*}%
+%    V_o = \frac{1}{1-D} \left[ V_i D - \alpha V_o - \left(1-D \right) 2 V_D \right]
+%  \end{equation*}
+%  \begin{equation*}%
+%    V_o = \frac{1}{1 + \frac{\alpha}{1-D}} \left[ \frac{V_i D}{1-D} - 2 V_D \right] = \boxed{\frac{V_i D - 2 \left(1-D \right) V_D}{1-D + \alpha}}
+%  \end{equation*}
+%
+%\end{enumerate}
+%
+%\exercise
+%
+%Compare as curvas de ganho estático (ideal e com perdas) com resultados de simulação.
+%
+%\vspace{.5cm}
+%
+%\begin{center}
+%\begin{minipage}[t]{.3\textwidth}
+%  \centering
+%
+%  Parâmetros:
+%
+%  \vspace{.5cm}
+%
+%  \begin{tabular}{|c|c|}
+%    \hline
+%    $T_s$ & 20 $\mathrm{\mu}$s\\
+%    \hline
+%    $V_i$ & 100 V\\
+%    \hline
+%    $P_o$ & 100 W\\
+%    \hline
+%    $\Delta V_o$ & 0,1 \%\\
+%    \hline
+%    $\Delta I_L$ & 10 \%\\
+%    \hline
+%    $V_D$ & 1 V\\
+%    \hline
+%    $R_L$ & 100 m$\Omega$\\
+%    \hline
+%    $R_{ON}$ & 100 m$\Omega$\\
+%    \hline
+%  \end{tabular}
+%\end{minipage}%
+%\begin{minipage}[t]{.5\textwidth}
+%  \centering
+%  Projetando para $D = 0,5$:
+%
+%  \vspace{-.2cm}
+%
+%  \begin{equation*}
+%    R = \frac{V_o^2}{P_o} = \frac{100^2}{100} = 100 \; \Omega 
+%  \end{equation*}%
+%  \begin{equation*}
+%    C_1 = \frac{D T_s V_o}{\Delta V_o R} = \frac{0,5 \cdot 20 \cdot 10^{-6} \cdot 100}{0,1 \cdot 100} = 100 \; \mathrm{\mu F}
+%  \end{equation*}%
+%  \begin{equation*}
+%    L_1 = \frac{D T_s V_i}{\Delta I_L} = \frac{0,5 \cdot 20 \cdot 10^{-6} \cdot 100}{0,1 \cdot \frac{100}{\left(1-0,5 \right) 100}} = 5 \; \mathrm{mH}
+%  \end{equation*}
+%\end{minipage}%
+%\end{center}
+%
+%\vspace{.5cm}
+%
+%Comparando:
+%
+%\begin{figure}[h]
+%  \centering
+%  \includegraphics[width=136mm]{G.png}
+%  \caption{Comparação dos ganhos.}
+%\end{figure}
+
+\end{document}

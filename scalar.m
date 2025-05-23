@@ -199,8 +199,8 @@
 %   Alguns gráficos são gerados para visualização dos resultados, são eles:
 %
 %  - Laço de histerese;
-%  - Campo magnético no tempo;
 %  - Indução no tempo;
+%  - Campo magnético no tempo;
 %  - Componentes da magnetização no tempo.
 %
 %   Esses gráficos são gerados para os seguintes casos:
@@ -309,7 +309,7 @@ end
 % intervalo de simulação
 global ti = 0; global tf = 1;
 
-% indução máxima
+% indução máxima (para algumas simulações)
 global B_max = 1.5;
 
 % B(t)
@@ -324,21 +324,21 @@ function result = B(t)
   % Curva de magnetização inicial
   %result = t * B_max/(tf-ti);
 
-  % `n-2` laços menores (plotar com no mínimo 100n pontos)
-  %n = 10; T = (tf-ti)/n;
+  % `n-1` laços menores (e 1 externo) (plotar com no mínimo 100n pontos)
+  %n = 8; T = (tf-ti)/n;
   %j = floor((t-ti)/T) + 1;
-  %result = j/(n-1) * B_max*sin(2*pi*(2/T)*t);
+  %result = j/n * 1.4*sin(2*pi*(2/T)*t);
 
   % harmônica de nº grau com amplitude relativa h_amp e defasagem phi
   % caso n = 3
-  %n = 3; h_amp = .3; phi = 15 * pi/180;
-  %result = B_max*(sin(2*pi*(1/(tf-ti))*t) ...
-  %                + h_amp * sin(2*pi*(n/(tf-ti))*t + phi));
+  n = 3; h_amp = .5; phi = 30 * pi/180;
+  result = B_max/1.3 * (sin(2*pi*(2/(tf-ti))*t) ...
+    + h_amp * sin(2*pi*(n*2/(tf-ti))*t + phi));
 
   % caso n = 5
-  n = 5; h_amp = .4; phi = 80 * pi/180;
-  result = 1/1.4 * B_max*(sin(2*pi*(1/(tf-ti))*t) ...
-    + h_amp * sin(2*pi*(n/(tf-ti))*t + phi));
+  %n = 5; h_amp = .5; phi = 80 * pi/180;
+  %result = 1/1.6 * B_max*(sin(2*pi*(2/(tf-ti))*t) ...
+  %  + h_amp * sin(2*pi*(n*2/(tf-ti))*t + phi));
 end
 
 % dB
@@ -350,21 +350,21 @@ function result = dBdt(t)
   % magnetização inicial
   %result = B_max/(tf-ti);
 
-  % `n-2` laços menores (plotar com no mínimo 100n pontos)
-  %n = 10; T = (tf-ti)/n;
+  % `n-1` laços menores (e 1 externo) (plotar com no mínimo 100n pontos)
+  %n = 8; T = (tf-ti)/n;
   %j = floor((t-ti)/T) + 1;
-  %result = j/(n-1) * 2*pi*(2/T) * B_max*cos(2*pi*(2/T)*t);
+  %result = j/n * 2*pi*(2/T) * 1.4*cos(2*pi*(2/T)*t);
 
   % harmônica de nº grau com amplitude relativa h_amp e defasagem phi
   % caso n = 3
-  %n = 3; h_amp = .3; phi = 15 * pi/180;
-  %result = B_max * (2*pi*(1/(tf-ti)) * cos(2*pi*(1/(tf-ti))*t) ...
-  %  + 2*pi*(n/(tf-ti)) * h_amp * cos(2*pi*(n/(tf-ti))*t + phi));
+  n = 3; h_amp = .5; phi = 30 * pi/180;
+  result = B_max/1.3 * (2*pi*(2/(tf-ti)) * cos(2*pi*(2/(tf-ti))*t) ...
+    + 2*pi*(n*2/(tf-ti)) * h_amp * cos(2*pi*(n*2/(tf-ti))*t + phi));
 
   % caso n = 5
-  n = 5; h_amp = .4; phi = 80 * pi/180;
-  result = 1/1.4 * B_max * (2*pi*(1/(tf-ti)) * cos(2*pi*(1/(tf-ti))*t) ...
-    + 2*pi*(n/(tf-ti)) * h_amp * cos(2*pi*(n/(tf-ti))*t + phi));
+  %n = 5; h_amp = .5; phi = 80 * pi/180;
+  %result = 1/1.6 * B_max * (2*pi*(2/(tf-ti)) * cos(2*pi*(2/(tf-ti))*t) ...
+  %  + 2*pi*(n*2/(tf-ti)) * h_amp * cos(2*pi*(n*2/(tf-ti))*t + phi));
 end
 
 %%%%% DEFINIÇÃO DOS PARÂMETROS E RESOLUÇÃO %%%%%
@@ -373,7 +373,7 @@ end
 M_0 = B(ti)/mu0;
 
 % número de passos no tempo para os quais se tem interesse na solução
-num_output_steps = 2000;
+num_output_steps = 300;
 
 ode_options = odeset(
   'RelTol', 1e-4,
@@ -405,7 +405,7 @@ for i=1:length(sol_time)
 end
 
 % salvar valores em arquivo
-%dlmwrite("results.txt", [H_vec, B_vec, Man_vec, Mir_vec], "delimiter", " ", "newline", "\n")
+dlmwrite("results.txt", [sol_time, H_vec, B_vec, Man_vec, Mir_vec], "delimiter", " ", "newline", "\n")
 
 close all
 
@@ -430,7 +430,7 @@ figure
 plot(sol_time, B_vec)
 title("Indução Magnética no Tempo")
 xlabel("t [s]")
-ylabel("B [A/m]")
+ylabel("B [T]")
 
 % plot das componentes da magnetização no tempo
 figure

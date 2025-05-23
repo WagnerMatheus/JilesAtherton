@@ -1,0 +1,53 @@
+\documentclass{homeworg}
+
+%\usepackage{amsmath, cancel, subcaption}
+%\usepackage[shortlabels]{enumitem}
+%\usepackage[export]{adjustbox}
+%\usepackage[american, nooldvoltagedirection]{circuitikz}
+
+%\usepackage{booktabs}
+%%\usepackage{tabularx}
+%\usepackage{multirow}
+
+\usepackage{gnuplot-lua-tikz}
+\usepackage{siunitx}
+\usepackage{icomma}
+
+\title{Materiais Elétricos e Magnéticos\\Tarefa 3}
+\author{Matheus Henrique Wagner}
+\date{Maio 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{figure}[!h]
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{laço_histerese.tex}
+    \vspace{-1cm}
+    \caption{uma caption}
+  \end{minipage}%
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{indução.tex}
+    \vspace{-1cm}
+    \caption{HHHHHHHHHHHHHHH}
+  \end{minipage}
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{campo.tex}
+    \vspace{-1cm}
+    \caption{uma caption}
+  \end{minipage}%
+  \begin{minipage}{.49\linewidth}
+    \centering
+    \input{componentes.tex}
+    \vspace{-1cm}
+    \caption{HHHHHHHHHHHHHHH}
+  \end{minipage}%
+\end{figure}
+
+text $\si{\ampere}$, \si{\ampere}
+
+\end{document}

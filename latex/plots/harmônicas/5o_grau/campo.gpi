@@ -1,0 +1,24 @@
+set terminal tikz size 7.5,5
+set output 'campo.tex'
+load "../../palette-purd.pal"
+
+set decimalsign ','
+
+unset key
+unset colorbox
+
+#set xrange [-250:250]
+#set xtics (-250, -125, 0, 125, 250)
+
+set yrange [-250:250]
+set ytics (-250, -125, 0, 125, 250)
+
+set xlabel "$t$ [\\si{\\second}]"
+set ylabel "$H$ [\\si{\\ampere\\per\\meter}]" offset -1,0
+
+set grid
+
+plot "results_5o_grau.txt" using 1:2 with lines palette frac 1
+
+
+
